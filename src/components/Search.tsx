@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { IRecipe } from "../models/recipe";
-import { apiKey, baseURL } from "../utility";
+import { apiKey, baseURL } from '../utility';
 import Spinner from "./Spinner";
 import ErrorDisplay from "./ErrorDisplay";
 import RecipePreview from "./RecipePreview";
@@ -12,6 +12,9 @@ export default function Search ({searchStr}:{searchStr:string}) : JSX.Element
 
     async function search () : Promise<IRecipe[]>
     {
+        if(!searchStr)
+          return [];
+        
         const res = await fetch (`${baseURL}?search=${searchStr}&key=${apiKey}`);
 
         if (!res.ok)
