@@ -38,6 +38,33 @@ export default function MainRecipe ({activeId}: Props) : JSX.Element
             setRecipe (data);
     }, [data])
 
+
+    function setServings (modifier:number) : void
+    {
+
+        setRecipe (curr =>
+            {
+                if (curr)
+                {
+                    const newServings = curr.servings + modifier;
+
+                    if (newServings < 1 || newServings > 8)
+                        return curr;
+
+                    const mult = newServings / curr.servings;
+
+                    return {
+                        ...curr,
+                        cooking_time: curr.cooking_time * mult,
+                        ingredients: curr.ingredients.map (ing => ({...ing, quantity: ing.quantity ? ing.quantity * mult : ing.quantity})),
+                        servings: newServings
+                    }
+                }
+
+                return null;
+            })
+    }
+
     return <div className="recipe">
     {!activeId && <div className="message">
       <div>
@@ -64,7 +91,7 @@ export default function MainRecipe ({activeId}: Props) : JSX.Element
         <svg className="recipe__info-icon">
           <use href="src/img/icons.svg#icon-clock"></use>
         </svg>
-        <span className="recipe__info-data recipe__info-data--minutes">{recipe.cooking_time}</span>
+        <span className="recipe__info-data recipe__info-data--minutes">{recipe.cooking_time.toFixed(0)}</span>
         <span className="recipe__info-text">minutes</span>
       </div>
       <div className="recipe__info">
@@ -75,12 +102,12 @@ export default function MainRecipe ({activeId}: Props) : JSX.Element
         <span className="recipe__info-text">servings</span>
 
         <div className="recipe__info-buttons">
-          <button className="btn--tiny btn--decrease-servings">
+          <button onClick={() => setServings (-1)} className="btn--tiny btn--decrease-servings">
             <svg>
               <use href="src/img/icons.svg#icon-minus-circle"></use>
             </svg>
           </button>
-          <button className="btn--tiny btn--increase-servings">
+          <button onClick={() => setServings(+1)} className="btn--tiny btn--increase-servings">
             <svg>
               <use href="src/img/icons.svg#icon-plus-circle"></use>
             </svg>
