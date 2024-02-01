@@ -1,5 +1,5 @@
 
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './App.css'
 import Header from './components/Header';
@@ -23,7 +23,19 @@ function App() {
 
   const [searchStr, setSearchStr] = useState<string>('');
   const [activeId, setActiveId] = useState<string>('');
-  const [bookmarks, setBookmarks] = useState<IRecipe[]> ([]);
+  const [bookmarks, setBookmarks] = useState<IRecipe[]> (() =>
+  {
+      const json = localStorage.getItem ('bookmarks');
+
+      if (json)
+        return JSON.parse (json);
+    
+        return [];
+  });
+
+  useEffect (() => {
+    localStorage.setItem ('bookmarks', JSON.stringify (bookmarks));
+  }, [bookmarks])
 
   function bookmark (recipe:IRecipe) : void
   {
