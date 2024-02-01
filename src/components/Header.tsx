@@ -1,6 +1,12 @@
 import { useState } from "react"
+import { IRecipe } from "../models/recipe";
+import RecipePreview from "./RecipePreview";
 
-export default function Header ({setSearchStr}:{setSearchStr:(name:string) => void}) : JSX.Element
+type Props = {
+    setSearchStr:(name:string) => void
+    bookmarks: IRecipe[]
+}
+export default function Header ({setSearchStr, bookmarks}:Props) : JSX.Element
 {
     const [name, setName] = useState<string>('');
 
@@ -54,7 +60,7 @@ export default function Header ({setSearchStr}:{setSearchStr:(name:string) => vo
           </button>
           <div className="bookmarks">
             <ul className="bookmarks__list">
-              <div className="message">
+              {bookmarks.length === 0 && <div className="message">
                 <div>
                   <svg>
                     <use href="src/img/icons.svg#icon-smile"></use>
@@ -63,7 +69,7 @@ export default function Header ({setSearchStr}:{setSearchStr:(name:string) => vo
                 <p>
                   No bookmarks yet. Find a nice recipe and bookmark it :)
                 </p>
-              </div>
+              </div> || bookmarks.map (bm => <RecipePreview key={bm.id} {...bm} />)}
             </ul>
           </div>
         </li>

@@ -6,9 +6,10 @@ import Spinner from "./Spinner";
 import ErrorDisplay from "./ErrorDisplay";
 
 type Props = {
-    activeId:string
+    activeId:string,
+    bookmark: (recipe:IRecipe) => void
 }
-export default function MainRecipe ({activeId}: Props) : JSX.Element
+export default function MainRecipe ({activeId, bookmark}: Props) : JSX.Element
 {
     const {data, isLoading, error, refetch } = useQuery ({queryKey:['recipe'], queryFn:fetchRecipe});
     const [recipe, setRecipe] = useState<IRecipe | null> (null);
@@ -120,7 +121,7 @@ export default function MainRecipe ({activeId}: Props) : JSX.Element
           <use href="src/img/icons.svg#icon-user"></use>
         </svg>
       </div>
-      <button className="btn--round">
+      <button onClick={() => bookmark(recipe)} className="btn--round">
         <svg className="">
           <use href="src/img/icons.svg#icon-bookmark-fill"></use>
         </svg>
