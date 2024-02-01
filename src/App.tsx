@@ -7,6 +7,7 @@ import Search from './components/Search';
 
 const queryClient = new QueryClient ();
 
+
 function App() {
 
   const [searchStr, setSearchStr] = useState<string>('');
