@@ -1,9 +1,13 @@
+import { useContext } from "react";
 import { IRecipe } from "../models/recipe";
+import { AppContext } from "../App";
 
-export default function RecipePreview ({title, publisher, image_url}: IRecipe) : JSX.Element
+export default function RecipePreview ({id, title, publisher, image_url}: IRecipe) : JSX.Element
 {
-    return <li className="preview">
-    <a className="preview__link preview__link--active" href="#23456">
+    const {activeId, setActiveId} = useContext (AppContext);
+
+    return <li className="preview" onClick={() => setActiveId (id)}>
+    <a className={`preview__link ${activeId === id && 'preview__link--active'}`} href="#23456">
       <figure className="preview__fig">
         <img src={image_url} alt={title} />
       </figure>
