@@ -1,4 +1,4 @@
-export default function ErrorDisplay (err:Error) : JSX.Element
+export default function ErrorDisplay ({err}:{err:Error}) : JSX.Element
 {
     return <div className="error">
     <div>

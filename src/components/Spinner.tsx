@@ -1,4 +1,4 @@
-export default function Spinnner () : JSX.Element
+export default function Spinner () : JSX.Element
 {
     return <div className="spinner">
     <svg>
