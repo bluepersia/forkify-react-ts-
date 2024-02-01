@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { IRecipe } from "../models/recipe";
 import { apiKey, baseURL } from '../utility';
 import Spinner from "./Spinner";
@@ -9,6 +9,29 @@ import RecipePreview from "./RecipePreview";
 export default function Search ({searchStr}:{searchStr:string}) : JSX.Element
 {
     const {data:recipes, isLoading, error, refetch} = useQuery ({queryKey:['search'], queryFn: search});
+    const [page, setPage] = useState<number>(1);
+
+    function totalPages () : number 
+    {
+      if (recipes)
+        return Math.ceil (recipes.length / 10);
+
+      return 1;
+    }
+
+    function getCurrentPage () : IRecipe[]
+    {
+      if (recipes)
+      {
+        const endIndex = page * 10;
+        const startIndex = endIndex - 10;
+
+        return recipes.slice (startIndex, endIndex);
+      }
+
+      return [];
+      
+    }
 
     async function search () : Promise<IRecipe[]>
     {
@@ -28,26 +51,28 @@ export default function Search ({searchStr}:{searchStr:string}) : JSX.Element
       refetch ();
     }, [searchStr])
 
+    const currentPage = getCurrentPage ();
+
     return <div className="search-results">
     <ul className="results">
       {isLoading && <Spinner/>}
       {error && <ErrorDisplay err={error}/>}
-      {recipes && recipes.map (recipe => <RecipePreview key={recipe.id} {...recipe}/>)}
+      {currentPage && currentPage.map (recipe => <RecipePreview key={recipe.id} {...recipe}/>)}
     </ul>
 
     <div className="pagination">
-       <button className="btn--inline pagination__btn--prev">
+       {page > 1 && <button onClick={() => setPage (curr => curr - 1)} className="btn--inline pagination__btn--prev">
         <svg className="search__icon">
           <use href="src/img/icons.svg#icon-arrow-left"></use>
         </svg>
-        <span>Page 1</span>
-      </button>
-      <button className="btn--inline pagination__btn--next">
-        <span>Page 3</span>
+        <span>Page {page - 1}</span>
+      </button>}
+      {page < totalPages () && <button onClick={()=> setPage (curr => curr + 1)} className="btn--inline pagination__btn--next">
+        <span>Page {page + 1}</span>
         <svg className="search__icon">
           <use href="src/img/icons.svg#icon-arrow-right"></use>
         </svg>
-      </button> 
+      </button>}
     </div>
 
     <p className="copyright">
